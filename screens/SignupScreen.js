@@ -3,22 +3,24 @@ import AuthContent from '../components/Auth/AuthContent'
 import { createUser } from '../util/auth'
 import LoadingOverlay from '../components/ui/LoadingOverlay'
 import { AuthContext } from '../store/auth-context'
+import { Alert } from 'react-native'
+
 function SignupScreen() {
-  const [isAuthenticating, setIsAuthentication] = useState(false)
+  const [isAuthenticating, setIsAuthenticating] = useState(false)
   const authCtx = useContext(AuthContext)
 
   async function signUpHandler({ email, password }) {
-    setIsAuthentication(true)
+    setIsAuthenticating(true)
     try {
-      const token = await createUser(email, password)
-      authCtx.authenticate(token)
+      const tokens = await createUser(email, password)
+      authCtx.authenticate(tokens)
     } catch (error) {
       Alert.alert(
         'Authentication failed!',
         'Could not create account. Please check your credentials or try again later!'
       )
+      setIsAuthenticating(false)
     }
-    setIsAuthentication(false)
   }
 
   if (isAuthenticating) {
